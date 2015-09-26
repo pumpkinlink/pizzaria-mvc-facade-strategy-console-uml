@@ -1,0 +1,144 @@
+@startuml
+skinparam class {
+backGroundColor<<View>> LightBlue
+backGroundColor<<Controller>> Orange
+backGroundColor<<Model>> LightGreen
+}
+
+interface Observer <<View>>{
++updateBusca(List l);
++updateRelatorio(List l);
++update(String s);
+}
+class View <<View>>{
+-busca: Busca
+-relat: Relatorio
+-reserva: Reserva
+-List<Pizza> resultadosPizza;
+-List<Pizza> relatorio;
++update(String s)
++mostrarBuscaCliente()
++mostrarBuscaCozinheiro()
++mostrarRelatorioCompleto()
++mostrarRelatorioSimples()
++reservar(int num,String cliente)
++setBusca(Busca)
++setRelatorio(Relatorio)
++setReserva(Reserva)
+reservar(int num,String cliente)
+}
+
+interface Busca <<Controller>>{
++buscar()
+}
+interface Relatorio<<Controller>>{
++gerarRelatorio()
+}
+interface Reserva<<Controller>>{
++reservarMesa()
+}
+
+class BuscaCliente<<Controller>>{
+-pizzaria: Subject
+-view: View
++buscar()
+}
+class BuscaCozinheiro<<Controller>>{
+-pizzaria: Subject
+-view: View
++buscar()
+}
+
+class RelatorioSimples<<Controller>>{
+-pizzaria: Subject
+-view: View
++gerarRelatorio()
+}
+class RelatorioCompleto<<Controller>>{
+-pizzaria: Subject
+-view: View
++gerarRelatorio()
+}
+
+class ReservaUmaPessoa<<Controller>>{
+-pizzaria: Subject
+-view: View
++reservarMesa()
+}
+class ReservaDuasPessoas<<Controller>>{
+-pizzaria: Subject
+-view: View
++reservarMesa()
+}
+
+
+
+interface Subject <<Model>>{
++registerObserver(Observer o)
++notifyObserversSearch(List result)
++notifyObserversRelatorio(List result)
++reservarUmaPessoa(int numero, String cliente)
++reservarDuasPessoas(int numero, String cliente)
+}
+
+
+class Pizzaria <<Model>>{
+-List observers
+-List pizzas
+-List mesas
++registerObserver(Observer o)
++notifyObserversSearch(List resultados)
++notifyObserversRelatorio(List resultados)
++notifyObserversAdd()
++notifyObservers(String msg)
++addPizza(Pizza pizza)
++addMesa(Mesa mesa)
++reservarUmaPessoa(int numero, String cliente)
++reservarDuasPessoas(int numero, String cliente)
++buscar(String s)
++relatorio()
+}
+
+class Pizza <<Model>>{
+-boolean bordaRecheada
+-String Sabor
+-BigDecimal preco
++boolean matches()
+}
+
+class Mesa <<Model>>{
+-reservada: boolean
+-cliente: String
+String cliente;
+boolean duaspessoas
+int numero;
+String ingredientes
+matches(String s):bool
+
+
+}
+
+Observer <|.. View
+Subject <|.. Pizzaria
+
+Pizzaria --> Pizza
+Pizzaria --> Mesa
+View <--Pizzaria
+
+BuscaCliente..|>Busca
+BuscaCozinheiro..|>Busca
+Busca<-->View
+Busca-->Pizzaria
+
+RelatorioCompleto..|>Relatorio
+RelatorioSimples..|>Relatorio
+Relatorio<-->View
+Relatorio-->Pizzaria
+
+ReservaUmaPessoa..|>Reserva
+ReservaDuasPessoas..|>Reserva
+Reserva<-->View
+Reserva-->Pizzaria
+
+
+@enduml
